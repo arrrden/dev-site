@@ -1,24 +1,19 @@
 {
     "env": {
         "browser": true,
-        "es6": true,
+        "es2020": true,
         "node": true
     },
     "extends": [
         "plugin:react/recommended",
-        // "plugin:prettier/recommended"
         "standard"
     ],
-    "globals": {
-        "Atomics": "readonly",
-        "SharedArrayBuffer": "readonly"
-    },
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaFeatures": {
             "jsx": true
         },
-        "ecmaVersion": 2020,
+        "ecmaVersion": 11,
         "sourceType": "module"
     },
     "plugins": [
@@ -27,6 +22,8 @@
     ],
     "rules": {
         "comma-dangle": 0,
-        "space-before-function-paren": 0
+        "space-before-function-paren": 0,
+        "no-use-before-define": "off",
+        "@typescript-eslint/no-use-before-define": ["error"]
     }
 }

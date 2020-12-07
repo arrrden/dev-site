@@ -1,6 +1,10 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
+const webpack = require('webpack')
+
+const isDevelopment = process.env.NODE_ENV !== 'production'
 
 module.exports = {
   target: 'web',
@@ -13,7 +17,7 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
   },
-
+  mode: isDevelopment ? 'development' : 'production',
   module: {
     rules: [
       {
@@ -21,6 +25,17 @@ module.exports = {
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
+          options: {
+            presets: [
+              '@babel/preset-env',
+              '@babel/preset-react',
+              '@babel/preset-typescript'
+            ],
+            plugins: [
+              '@babel/plugin-transform-runtime',
+              isDevelopment && require.resolve('react-refresh/babel'),
+            ].filter(Boolean),
+          }
         },
       },
       {
@@ -49,16 +64,21 @@ module.exports = {
     ],
   },
   plugins: [
-    new CleanWebpackPlugin({
+    isDevelopment && new CleanWebpackPlugin({
       dry: true,
       verbose: true,
       cleanStaleWebpackAssets: false,
     }),
-    new HtmlWebpackPlugin({
+    isDevelopment && new HtmlWebpackPlugin({
       title: 'Hot Module Replacement',
       template: './src/index.html',
     }),
-  ],
+    isDevelopment && new webpack.HotModuleReplacementPlugin(),
+    isDevelopment && new ReactRefreshWebpackPlugin()
+  ].filter(Boolean),
+  optimization: {
+
+  },
   devServer: {
     historyApiFallback: true,
     contentBase: './dist',
